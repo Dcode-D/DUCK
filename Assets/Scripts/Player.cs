@@ -150,17 +150,10 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
-        if(this.kitchenObject == null)
-        {
-            this.kitchenObject = kitchenObject;
-        }
-        else
-        {
-            Debug.Log("Cannot pick up new object");
-        }
+        this.kitchenObject = kitchenObject;
     }
 
-    public bool IsKitchenObject()
+    public bool HasKitchenObject()
     {
         return kitchenObject != null;
     }

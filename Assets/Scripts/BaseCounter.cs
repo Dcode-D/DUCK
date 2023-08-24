@@ -22,7 +22,7 @@ public abstract class BaseCounter : MonoBehaviour, IKitchenObjectParent
         this.kitchenObject = kitchenObject;
     }
 
-    public bool IsKitchenObject()
+    public bool HasKitchenObject()
     {
         return kitchenObject != null;
     }

@@ -10,5 +10,5 @@ public interface IKitchenObjectParent
 
     public void SetKitchenObject(KitchenObject kitchenObject);
 
-    public bool IsKitchenObject();
+    public bool HasKitchenObject();
 }

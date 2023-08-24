@@ -7,18 +7,31 @@ public class ClearCounter : BaseCounter
     [SerializeField] private KitchenObjectSO kitchenObjectSO;
     public override void Interact(Player player)
     {
-        if (kitchenObject==null)
+        if (!HasKitchenObject())
         {
-            Transform kitchenTransform = Instantiate(kitchenObjectSO.prefab,counterTop);
-            kitchenObject = kitchenTransform.GetComponent<KitchenObject>();
-            kitchenObject.SetParent(this);
+            //doesn't have any kitchen object yet
+            if (player.HasKitchenObject())
+            {
+                //player has kitchen object
+                player.GetKitchenObject().SetParent(this);
+
+            }
+            else
+            {
+                //player has nothing 
+            }
         }
         else
         {
-            if (!player.IsKitchenObject())
+            //already has a kitchen object
+            if(!player.HasKitchenObject())
             {
+                //player doesn't have any kitchen object
                 this.kitchenObject.SetParent(player);
-                this.kitchenObject = null;
+            }
+            else
+            {
+                //player already had a kitchen object
             }
             
         }
