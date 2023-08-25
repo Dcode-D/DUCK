@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClearCounter : BaseCounter
+public class CuttingCounter : BaseCounter
 {
-    [SerializeField] private KitchenObjectSO kitchenObjectSO;
+    [SerializeField] private KitchenObjectSO cutKitchenObjectSO;
     public override void Interact(Player player)
     {
         if (!HasKitchenObject())
@@ -24,7 +24,7 @@ public class ClearCounter : BaseCounter
         else
         {
             //already has a kitchen object
-            if(!player.HasKitchenObject())
+            if (!player.HasKitchenObject())
             {
                 //player doesn't have any kitchen object
                 this.kitchenObject.SetParent(player);
@@ -33,12 +33,20 @@ public class ClearCounter : BaseCounter
             {
                 //player already had a kitchen object
             }
-            
+
         }
     }
 
     public override void InteractAlternate(Player player)
     {
-        
+        if (HasKitchenObject())
+        {
+            //there is a kitchen object
+            //Destroy current Kitchen object and give slices tomato
+            kitchenObject.DestroySelf();
+            Transform kitchenObjectTransform = Instantiate(cutKitchenObjectSO.prefab, GetKitchenObjectFollowTransform());
+            kitchenObjectTransform.GetComponent<KitchenObject>().SetParent(this);
+            Debug.Log(kitchenObjectTransform.localPosition);
+        }
     }
 }

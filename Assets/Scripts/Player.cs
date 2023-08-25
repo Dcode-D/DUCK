@@ -33,6 +33,12 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public void Start()
     {
         input.OnInputAction += Input_OnInputAction;
+        input.OnInteractAlternate += Input_OnInteractAlternate;
+    }
+
+    private void Input_OnInteractAlternate(object sender, EventArgs e)
+    {
+        selectedCounter?.InteractAlternate(this);
     }
 
     private void Input_OnInputAction(object sender, System.EventArgs e)
@@ -69,7 +75,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         {
             Vector3 moveDirX = new Vector3(moveDir.x, 0, 0);
             //check can move in x direction
-            canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
+            canMove = moveDirX!=Vector3.zero && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
             if (canMove)
             {
                 //can move in x dir
@@ -79,7 +85,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
             {
                 //else check can move in z direction
                 Vector3 moveDirZ = new Vector3(0, 0, moveDirX.z);
-                canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
+                canMove = moveDirZ!=Vector3.zero && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
                 if (canMove)
                 {
                     //can move in z direction
