@@ -27,4 +27,9 @@ public class ContainerCounter : BaseCounter
     {
         
     }
+
+    public Sprite GetKitchenObjectSOSprite()
+    {
+        return kitchenObjectSO.sprite;
+    }
 }
