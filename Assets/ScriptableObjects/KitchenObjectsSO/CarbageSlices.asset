@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 18ca16a8aff38e24687f50724fef2b5a, type: 3}
-  m_Name: CheeseBlock
+  m_Name: CarbageSlices
   m_EditorClassIdentifier: 
-  prefab: {fileID: 8819401333502919382, guid: 502cf95bb7cf2da45b5876e7c6fa78fc, type: 3}
-  sprite: {fileID: 21300000, guid: da2d04fe27b94e34ea0b624569b48a6f, type: 3}
-  objectName: CheeseBlock
+  prefab: {fileID: 8819401333502919382, guid: bba2838d412d9c94d86e2338b48734b0, type: 3}
+  sprite: {fileID: 21300000, guid: bee24f07c57157e45a946eed3bfe8b84, type: 3}
+  objectName: CarbageSlices
