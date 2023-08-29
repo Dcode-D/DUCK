@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,16 +6,31 @@ using UnityEngine;
 public class CuttingCounter : BaseCounter
 {
     [SerializeField] private CuttingRecipeSO[] cuttingRecipeSOArray;
+    private int cuttingProgress =0;
+
+    public event EventHandler<ProgressChangedEventArgs> OnProgressChanged;
+    public class ProgressChangedEventArgs : EventArgs
+    {
+        public float progress;
+    }
     public override void Interact(Player player)
     {
+        
         if (!HasKitchenObject())
         {
             //doesn't have any kitchen object yet
             if (player.HasKitchenObject())
             {
                 //player has kitchen object
-                player.GetKitchenObject().SetParent(this);
-
+                //kitchen object can be cut
+                OnProgressChanged.Invoke(this, new ProgressChangedEventArgs { progress = 0 });
+                if (HasRecipeKitchenObject(player.GetKitchenObject().GetKitchenObjectSO()))
+                {
+                    player.GetKitchenObject().SetParent(this);
+                    cuttingProgress = 0;
+                    
+                }
+                   
             }
             else
             {
@@ -27,6 +43,7 @@ public class CuttingCounter : BaseCounter
             if (!player.HasKitchenObject())
             {
                 //player doesn't have any kitchen object
+                OnProgressChanged.Invoke(this, new ProgressChangedEventArgs { progress = 0 });
                 this.kitchenObject.SetParent(player);
             }
             else
@@ -43,26 +60,50 @@ public class CuttingCounter : BaseCounter
         {
             //there is a kitchen object
             //Destroy current Kitchen object and give kitchen objects according to recipe
-            KitchenObjectSO resultCuttingKitchenObject = GetResultRecipeSO(kitchenObject.GetKitchenObjectSO());
+            KitchenObjectSO resultCuttingKitchenObject = GetResultKitchenObjectFromRecipe(kitchenObject.GetKitchenObjectSO());
 
             if(resultCuttingKitchenObject != null)
             {
-            kitchenObject.DestroySelf();
-            Transform kitchenObjectTransform = Instantiate(resultCuttingKitchenObject?.prefab, GetKitchenObjectFollowTransform());
-            kitchenObjectTransform.GetComponent<KitchenObject>().SetParent(this);
-            Debug.Log(kitchenObjectTransform.localPosition);
+            //object can be cut
+            cuttingProgress++;
+            var recipe = GetResultRecipe(kitchenObject.GetKitchenObjectSO());
+                //notify progress changed 
+            OnProgressChanged?.Invoke(this, new ProgressChangedEventArgs
+            {
+
+                progress =(float) cuttingProgress/recipe.maxCut,
+            });
+            if(cuttingProgress >= recipe.maxCut) 
+                { 
+                kitchenObject.DestroySelf();
+                Transform kitchenObjectTransform = Instantiate(resultCuttingKitchenObject?.prefab, GetKitchenObjectFollowTransform());
+                kitchenObjectTransform.GetComponent<KitchenObject>().SetParent(this);
+                }
+            
             }
             
         }
     }
 
-    private KitchenObjectSO GetResultRecipeSO(KitchenObjectSO inputKitchenObjectSO)
+    private KitchenObjectSO GetResultKitchenObjectFromRecipe(KitchenObjectSO inputKitchenObjectSO)
     {
-        foreach(CuttingRecipeSO recipe in cuttingRecipeSOArray)
+        var result = GetResultRecipe(inputKitchenObjectSO);
+        return result ? result.output : null;
+    }
+
+    private bool HasRecipeKitchenObject(KitchenObjectSO inputKitchenObject)
+    {
+        var tmp = GetResultRecipe(inputKitchenObject);
+        return tmp != null;
+    }
+
+    private CuttingRecipeSO GetResultRecipe(KitchenObjectSO input)
+    {
+        foreach (CuttingRecipeSO recipe in cuttingRecipeSOArray)
         {
-            if(recipe.input == inputKitchenObjectSO)
+            if (recipe.input == input)
             {
-                return recipe.output;
+                return recipe;
             }
         }
         return null;
