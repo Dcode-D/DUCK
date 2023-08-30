@@ -13,6 +13,8 @@ public class CuttingCounter : BaseCounter
     {
         public float progress;
     }
+    public event EventHandler OnCut;
+
     public override void Interact(Player player)
     {
         
@@ -23,7 +25,7 @@ public class CuttingCounter : BaseCounter
             {
                 //player has kitchen object
                 //kitchen object can be cut
-                OnProgressChanged.Invoke(this, new ProgressChangedEventArgs { progress = 0 });
+                OnProgressChanged?.Invoke(this, new ProgressChangedEventArgs { progress = 0 });
                 if (HasRecipeKitchenObject(player.GetKitchenObject().GetKitchenObjectSO()))
                 {
                     player.GetKitchenObject().SetParent(this);
@@ -73,6 +75,12 @@ public class CuttingCounter : BaseCounter
 
                 progress =(float) cuttingProgress/recipe.maxCut,
             });
+            //invoke oncut when the object can be cut
+            if(recipe != null&&recipe.maxCut>cuttingProgress)
+                {
+                    OnCut?.Invoke(this,EventArgs.Empty);
+                }
+            //if the maxcut for the recipe is reached, spawn new kitchen object
             if(cuttingProgress >= recipe.maxCut) 
                 { 
                 kitchenObject.DestroySelf();
