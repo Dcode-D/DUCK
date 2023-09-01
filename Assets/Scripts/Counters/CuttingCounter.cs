@@ -84,8 +84,7 @@ public class CuttingCounter : BaseCounter
             if(cuttingProgress >= recipe.maxCut) 
                 { 
                 kitchenObject.DestroySelf();
-                Transform kitchenObjectTransform = Instantiate(resultCuttingKitchenObject?.prefab, GetKitchenObjectFollowTransform());
-                kitchenObjectTransform.GetComponent<KitchenObject>().SetParent(this);
+                    KitchenObject.SpawnKitchenObject(recipe.output.prefab, this);
                 }
             
             }
