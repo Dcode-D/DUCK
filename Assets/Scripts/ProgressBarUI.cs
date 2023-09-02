@@ -5,16 +5,22 @@ using UnityEngine.UI;
 
 public class ProgressBarUI : MonoBehaviour
 {
+    [SerializeField] private GameObject progressImplement;
     [SerializeField] private Image barImage;
-    [SerializeField] private CuttingCounter cuttingCounter;
+    private IProgress hasProgress;
 
     private void Start()
     {
-        cuttingCounter.OnProgressChanged += CuttingCounter_OnProgressChanged;
+        hasProgress = progressImplement.GetComponent<IProgress>();
+        if(hasProgress == null)
+        {
+            Debug.Log(progressImplement + "Does not have any Iprogress implmentation");
+        }
+        hasProgress.OnProgressChanged += CuttingCounter_OnProgressChanged;
         gameObject.SetActive(false);
     }
 
-    private void CuttingCounter_OnProgressChanged(object sender, CuttingCounter.ProgressChangedEventArgs e)
+    private void CuttingCounter_OnProgressChanged(object sender, IProgress.ProgressChangedEventArgs e)
     {
         barImage.fillAmount = e.progress;
         gameObject.SetActive(true);

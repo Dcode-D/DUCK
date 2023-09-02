@@ -3,16 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CuttingCounter : BaseCounter
+public class CuttingCounter : BaseCounter,IProgress
 {
     [SerializeField] private CuttingRecipeSO[] cuttingRecipeSOArray;
     private int cuttingProgress =0;
 
-    public event EventHandler<ProgressChangedEventArgs> OnProgressChanged;
-    public class ProgressChangedEventArgs : EventArgs
-    {
-        public float progress;
-    }
+    public event EventHandler<IProgress.ProgressChangedEventArgs> OnProgressChanged;
+    
     public event EventHandler OnCut;
 
     public override void Interact(Player player)
@@ -25,7 +22,7 @@ public class CuttingCounter : BaseCounter
             {
                 //player has kitchen object
                 //kitchen object can be cut
-                OnProgressChanged?.Invoke(this, new ProgressChangedEventArgs { progress = 0 });
+                OnProgressChanged?.Invoke(this, new IProgress.ProgressChangedEventArgs { progress = 0 });
                 if (HasRecipeKitchenObject(player.GetKitchenObject().GetKitchenObjectSO()))
                 {
                     player.GetKitchenObject().SetParent(this);
@@ -45,7 +42,7 @@ public class CuttingCounter : BaseCounter
             if (!player.HasKitchenObject())
             {
                 //player doesn't have any kitchen object
-                OnProgressChanged.Invoke(this, new ProgressChangedEventArgs { progress = 0 });
+                OnProgressChanged.Invoke(this, new IProgress.ProgressChangedEventArgs { progress = 0 });
                 this.kitchenObject.SetParent(player);
             }
             else
@@ -70,7 +67,7 @@ public class CuttingCounter : BaseCounter
             cuttingProgress++;
             var recipe = GetResultRecipe(kitchenObject.GetKitchenObjectSO());
                 //notify progress changed 
-            OnProgressChanged?.Invoke(this, new ProgressChangedEventArgs
+            OnProgressChanged?.Invoke(this, new IProgress.ProgressChangedEventArgs
             {
 
                 progress =(float) cuttingProgress/recipe.maxCut,
