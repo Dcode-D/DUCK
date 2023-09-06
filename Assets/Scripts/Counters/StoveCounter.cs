@@ -35,7 +35,7 @@ public class StoveCounter : BaseCounter, IProgress
         //Use a state machine 
         if (HasKitchenObject())
         {
-            Debug.Log(state.ToString());
+            
             switch (state)
             {
                 case State.Idle:
@@ -132,6 +132,36 @@ public class StoveCounter : BaseCounter, IProgress
             else
             {
                 //player already had a kitchen object
+                if (player.GetKitchenObject() is PlateKitchenObject)
+                {
+                    //player carrying a plate
+                    var plateKitchenObject = player.GetKitchenObject() as PlateKitchenObject;
+                    if (plateKitchenObject.TryAddIngredient(this.kitchenObject.GetKitchenObjectSO()))
+                    {
+                        this.kitchenObject.DestroySelf();
+                        state = State.Idle;
+                        timer = 0;
+                        OnStateChanged?.Invoke(this, new OnStateChangedEventArgs { state = state });
+                        OnProgressChanged?.Invoke(this, new IProgress.ProgressChangedEventArgs { progress = 0 });
+                    }
+                }
+                else
+                {
+                    //player not carrying a plate
+                    if (this.kitchenObject is PlateKitchenObject)
+                    {
+                        //the kitchen object of this counter is a plate
+                        var plateKitchenObject = this.kitchenObject as PlateKitchenObject;
+                        if (plateKitchenObject.TryAddIngredient(player.GetKitchenObject().GetKitchenObjectSO()))
+                        {
+                            player.GetKitchenObject().DestroySelf();
+                            state = State.Idle;
+                            timer = 0;
+                            OnStateChanged?.Invoke(this, new OnStateChangedEventArgs { state = state });
+                            OnProgressChanged?.Invoke(this, new IProgress.ProgressChangedEventArgs { progress = 0 });
+                        }
+                    }
+                }
             }
 
         }
