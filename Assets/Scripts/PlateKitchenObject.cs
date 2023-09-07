@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,12 @@ public class PlateKitchenObject : KitchenObject
         this.listIngredients = new List<KitchenObjectSO>();
     }
 
+    public event EventHandler<OnIngredientsAddedEventArgs> OnIngredientsAdded;
+    public class OnIngredientsAddedEventArgs: EventArgs
+    {
+        public KitchenObjectSO ingredient;
+    }
+
     public bool TryAddIngredient(KitchenObjectSO ingredient)
     {
         if(listValidKitchenObjectSO!=null && listValidKitchenObjectSO.Contains(ingredient)) 
@@ -19,6 +26,7 @@ public class PlateKitchenObject : KitchenObject
             if (!listIngredients.Contains(ingredient))
             {
                 listIngredients.Add(ingredient);
+                OnIngredientsAdded?.Invoke(this, new OnIngredientsAddedEventArgs { ingredient = ingredient });
                 return true;
             }
             return false;
