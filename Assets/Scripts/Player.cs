@@ -85,7 +85,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
             {
                 //else check can move in z direction
                 Vector3 moveDirZ = new Vector3(0, 0, moveDirX.z);
-                canMove = moveDirZ!=Vector3.zero && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
+                canMove = moveDirZ!=Vector3.zero && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance);
                 if (canMove)
                 {
                     //can move in z direction
@@ -94,6 +94,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
                 else
                 {
                     //cannot move in any dir
+                    if (moveDir != Vector3.zero)
+                    {
+                        //make the charater face the moving dir
+                        transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime * 10);
+                    }
                 }
             }
         }

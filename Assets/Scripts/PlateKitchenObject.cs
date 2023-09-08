@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlateKitchenObject : KitchenObject
@@ -36,5 +37,9 @@ public class PlateKitchenObject : KitchenObject
             //ingredient is not permitted to put on a plate
             return false;
         }
+    }
+    public List<KitchenObjectSO> GetListIngredients()
+    {
+        return this.listIngredients;
     }
 }
