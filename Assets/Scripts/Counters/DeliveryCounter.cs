@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class DeliveryCounter : BaseCounter
 {
+    [SerializeField] private DeliveryManager _manager;
+    private void Start()
+    {
+        _manager = DeliveryManager.instance;
+    }
     public override void Interact(Player player)
     {
         if (player.HasKitchenObject())
@@ -12,6 +17,7 @@ public class DeliveryCounter : BaseCounter
             if(player.GetKitchenObject() is PlateKitchenObject)
             {
                 // kitchen object is a plate
+                _manager.Delivery(player.GetKitchenObject() as PlateKitchenObject);
                 player.GetKitchenObject().DestroySelf();
             }
         }
